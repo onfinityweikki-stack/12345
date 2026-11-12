@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>UGC Imóveis</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:#0b0b0b;
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#fff}
+  #stage{position:relative;width:1080px;height:1920px;overflow:hidden}
+  .abs{position:absolute;inset:0}
+  .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;will-change:transform}
+  .shade{background:linear-gradient(180deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.05) 32%,rgba(0,0,0,.1) 55%,rgba(0,0,0,.85) 100%)}
+  .dim{background:rgba(0,0,0,.45)}
+  .hook{position:absolute;left:80px;right:80px;top:300px;font-size:92px;line-height:1.05;font-weight:900;
+    text-shadow:0 6px 30px rgba(0,0,0,.6);letter-spacing:-1px}
+  .hook span{background:#ffd23f;color:#111;padding:0 14px;border-radius:12px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+  .problem{position:absolute;left:80px;right:80px;top:720px;font-size:84px;line-height:1.1;font-weight:800;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+  .card{position:absolute;left:60px;right:60px;top:560px;background:#fff;color:#111;border-radius:36px;padding:44px;
+    box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden}
+  .media{height:520px;border-radius:24px;background:linear-gradient(135deg,#27405f,#c9a46a);position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center}
+  .media img{width:100%;height:100%;object-fit:cover}
+  .media .ph{font-size:34px;font-weight:700;color:rgba(255,255,255,.9);text-align:center;padding:0 40px;line-height:1.3}
+  .tag{position:absolute;top:28px;left:28px;background:#ffd23f;color:#111;font-weight:900;font-size:30px;padding:10px 22px;border-radius:999px}
+  .ptitle{font-size:66px;font-weight:900;margin-top:34px;letter-spacing:-1px}
+  .ploc{font-size:38px;color:#555;margin-top:8px;font-weight:600}
+  .price{font-size:78px;font-weight:900;color:#0a7d3b;margin-top:18px}
+  .hl{list-style:none;margin-top:22px}
+  .hl li{font-size:40px;font-weight:700;padding:12px 0;border-top:2px solid #eee;opacity:0}
+  .hl li:before{content:"✔ ";color:#0a7d3b}
+  .panel{position:absolute;left:60px;right:60px;bottom:330px;background:rgba(255,255,255,.96);color:#111;border-radius:36px;padding:48px;
+    box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  .panel h2{font-size:80px;font-weight:900;letter-spacing:-1px}
+  .panel p{font-size:44px;font-weight:700;margin-top:18px;color:#333}
+  .btn{display:inline-block;margin-top:30px;background:#25d366;color:#fff;font-size:44px;font-weight:900;padding:26px 44px;border-radius:999px}
+  .endc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    background:radial-gradient(circle at 50% 35%,#1d3a5c,#0b0b0b 70%)}
+  .endc .name{font-size:96px;font-weight:900}
+  .endc .sub{font-size:50px;font-weight:700;color:#ffd23f;margin-top:20px}
+  .endc .small{font-size:40px;font-weight:600;color:#ccc;margin-top:18px}
+  .endc .line{font-size:64px;font-weight:900;margin-top:70px;background:#fff;color:#111;padding:24px 48px;border-radius:999px}
+  .caption{position:absolute;left:60px;right:60px;bottom:150px;text-align:center;font-size:58px;font-weight:900;line-height:1.2;
+    text-shadow:0 0 14px #000,0 4px 0 #000,4px 0 0 #000,-4px 0 0 #000,0 -4px 0 #000;}
+  #bar{position:absolute;top:0;left:0;height:12px;background:#ffd23f;width:0}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- Cena 1 e 2: apresentador (hook e problema) -->
+  <div class="abs" id="sceneA" style="opacity:0">
+    <img class="photo" id="photoA" src="assets/presenter.jpg" alt="">
+    <div class="abs shade"></div>
+    <div class="hook" id="hook"><span id="hookText"></span></div>
+    <div class="problem" id="problem"></div>
+  </div>
+
+  <!-- Cena 3 e 4: imóvel -->
+  <div class="abs" id="sceneB" style="opacity:0">
+    <div class="abs" style="background:linear-gradient(180deg,#0f1e31,#0b0b0b)"></div>
+    <div class="card" id="card">
+      <div class="media" id="media">
+        <div class="tag" id="ptag"></div>
+        <div class="ph" id="mediaPh"></div>
+      </div>
+      <div class="ptitle" id="ptitle"></div>
+      <div class="ploc" id="ploc"></div>
+      <div class="price" id="pprice"></div>
+      <ul class="hl" id="hl"></ul>
+    </div>
+  </div>
+
+  <!-- Cena 5: CTA com apresentador -->
+  <div class="abs" id="sceneC" style="opacity:0">
+    <img class="photo" id="photoC" src="assets/presenter.jpg" alt="">
+    <div class="abs dim"></div>
+    <div class="abs shade"></div>
+    <div class="panel" id="panel">
+      <h2 id="ctaTitle"></h2>
+      <p id="ctaLine"></p>
+      <div class="btn" id="ctaBtn"></div>
+    </div>
+  </div>
+
+  <!-- Cena 6: encerramento -->
+  <div class="abs endc" id="sceneD" style="opacity:0">
+    <div class="name" id="endName"></div>
+    <div class="sub" id="endCreci"></div>
+    <div class="small" id="endHandle"></div>
+    <div class="line" id="endLine"></div>
+    <div class="small" id="endLine2" style="margin-top:40px"></div>
+  </div>
+
+  <div class="caption" id="caption"></div>
+  <div id="bar"></div>
+</div>
+
+<script src="video.config.js"></script>
+<script>
+  const C = window.UGC_CONFIG;
+  const $ = id => document.getElementById(id);
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const easeOut = x => 1 - Math.pow(1 - clamp(x), 3);
+
+  // Preenche os textos a partir da configuração
+  $("hookText").textContent = C.hook;
+  $("problem").textContent = C.problem;
+  if (C.property.image) {
+    $("media").innerHTML = `<img src="${C.property.image}" alt=""><div class="tag">${C.property.tag}</div>`;
+  } else {
+    $("mediaPh").textContent = "FOTO DO IMÓVEL (substitua em video.config.js)";
+    $("ptag").textContent = C.property.tag;
+  }
+  $("ptitle").textContent = C.property.title;
+  $("ploc").textContent = C.property.location;
+  $("pprice").textContent = C.property.price;
+  $("hl").innerHTML = C.property.highlights.map(h => `<li>${h}</li>`).join("");
+  $("ctaTitle").textContent = C.cta.title;
+  $("ctaLine").textContent = C.cta.line + ": " + C.cta.value;
+  $("ctaBtn").textContent = "💬 " + C.cta.value;
+  $("endName").textContent = C.creator.name;
+  $("endCreci").textContent = C.creator.creci;
+  $("endHandle").textContent = C.creator.handle;
+  $("endLine").textContent = C.end.line1;
+  $("endLine2").textContent = C.end.line2;
+
+  // Janela de visibilidade de cada cena (segundos) com fade in/out
+  function sceneOpacity(t, from, to, fade = 0.35) {
+    if (t < from || t >= to) return 0;
+    const fin = clamp((t - from) / fade);
+    const fout = clamp((to - t) / fade);
+    return Math.min(fin, fout);
+  }
+
+  const HL_START = 10.9, HL_STEP = 0.85;
+
+  // Função chamada pelo renderizador: desenha o quadro no instante t
+  window.renderAt = function (t) {
+    $("bar").style.width = (clamp(t / C.duration) * 1080) + "px";
+
+    // Cena A: 0 → 6.5
+    const oA = sceneOpacity(t, 0, 6.5);
+    $("sceneA").style.opacity = oA;
+    $("photoA").style.transform = `scale(${1.02 + 0.06 * clamp(t / 6.5)})`;
+    const hookIn = easeOut((t - 0.1) / 0.5), hookOut = clamp(1 - (t - 3.2) / 0.4);
+    $("hook").style.opacity = t < 3.6 ? Math.min(hookIn, hookOut) : 0;
+    $("hook").style.transform = `translateY(${(1 - easeOut((t - 0.1) / 0.5)) * 60}px)`;
+    const probIn = easeOut((t - 3.7) / 0.5);
+    $("problem").style.opacity = t >= 3.6 && t < 6.5 ? probIn : 0;
+    $("problem").style.transform = `translateY(${(1 - probIn) * 60}px)`;
+
+    // Cena B: 6.5 → 15
+    const oB = sceneOpacity(t, 6.5, 15.0);
+    $("sceneB").style.opacity = oB;
+    const cardIn = easeOut((t - 6.6) / 0.6);
+    $("card").style.transform = `translateY(${(1 - cardIn) * 120}px) scale(${0.96 + 0.04 * cardIn})`;
+    $("card").style.opacity = cardIn;
+    document.querySelectorAll("#hl li").forEach((li, i) => {
+      const k = clamp((t - (HL_START + i * HL_STEP)) / 0.4);
+      li.style.opacity = easeOut(k);
+      li.style.transform = `translateX(${(1 - easeOut(k)) * -40}px)`;
+    });
+
+    // Cena C: 15 → 19.5
+    const oC = sceneOpacity(t, 15.0, 19.5);
+    $("sceneC").style.opacity = oC;
+    $("photoC").style.transform = `scale(${1.02 + 0.05 * clamp((t - 15) / 4.5)})`;
+    const pIn = easeOut((t - 15.3) / 0.6);
+    $("panel").style.opacity = pIn;
+    $("panel").style.transform = `translateY(${(1 - pIn) * 120}px)`;
+
+    // Cena D: 19.5 → 24
+    const oD = sceneOpacity(t, 19.5, C.duration + 1);
+    $("sceneD").style.opacity = oD;
+
+    // Legenda ativa
+    const cap = C.captions.find(c => t >= c.from && t < c.to);
+    $("caption").textContent = cap ? cap.text : "";
+    $("caption").style.opacity = cap ? 1 : 0;
+  };
+
+  // Primeiro quadro pronto
+  window.renderAt(0);
+</script>
+</body>
+</html>
