@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="pt-BR" data-resolution="portrait">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, height=1920" />
+  <script src="vendor/gsap.min.js"></script>
+  <style>
+    :root { --ground:#0a1420; --navy:#132640; --gold:#e0b15a; --blue:#5ab0ff; --ink:#f4f6fa; --mut:#9fb3c8; --font-display: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { margin:0; width:1080px; height:1920px; overflow:hidden; background:var(--ground); font-family:var(--font-display); color:var(--ink); }
+    #root { position:relative; width:1080px; height:1920px; overflow:hidden;
+      background: radial-gradient(circle at 50% 30%, #1b3558 0%, var(--ground) 65%); }
+
+    .scene { position:absolute; inset:0; }
+    .grid { position:absolute; inset:-200px; opacity:.6;
+      background-image: linear-gradient(rgba(90,176,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(90,176,255,.07) 1px, transparent 1px);
+      background-size:80px 80px; transform: perspective(900px) rotateX(60deg); transform-origin:50% 100%; }
+    .kick { position:absolute; left:80px; top:200px; font-size:40px; font-weight:800; letter-spacing:6px; color:var(--gold); }
+    .title { position:absolute; left:80px; right:80px; top:250px; font-size:100px; line-height:1.02; font-weight:900; letter-spacing:-2px; }
+    .sub { position:absolute; left:80px; right:80px; top:540px; font-size:48px; line-height:1.3; font-weight:600; color:var(--mut); }
+    .hl { color:var(--gold); }
+    .persp { position:absolute; left:0; right:0; perspective:1200px; perspective-origin:50% 40%; }
+
+    .c3 { position:absolute; left:50%; top:50%; width:640px; height:380px; margin:-190px 0 0 -320px; border-radius:32px;
+      background:linear-gradient(135deg,#1f3a5f,#0f1d33); border:2px solid rgba(224,177,90,.55);
+      display:flex; align-items:center; justify-content:center; font-size:72px; font-weight:900; box-shadow:0 40px 80px rgba(0,0,0,.5); }
+
+    #cube { position:absolute; left:50%; top:50%; width:380px; height:380px; margin:-190px 0 0 -190px; transform-style:preserve-3d; }
+    .face { position:absolute; inset:0; border:3px solid rgba(224,177,90,.7); background:rgba(19,38,64,.92); }
+    .f-front { transform: translateZ(190px); background:linear-gradient(160deg,#25466f,#132640); }
+    .f-back { transform: rotateY(180deg) translateZ(190px); }
+    .f-right { transform: rotateY(90deg) translateZ(190px); background:#0d1d33; }
+    .f-left { transform: rotateY(-90deg) translateZ(190px); background:#0d1d33; }
+    .f-top { transform: rotateX(90deg) translateZ(190px); background:#e0b15a; }
+    .f-bottom { transform: rotateX(-90deg) translateZ(190px); background:#070f1c; }
+    .win { position:absolute; width:72px; height:72px; background:linear-gradient(180deg,#ffd98a,#e0a64a); box-shadow:0 0 30px rgba(255,200,100,.5); }
+    .tagp { position:absolute; left:50%; top:1290px; transform:translateX(-50%); background:var(--gold); color:#111; font-weight:900; font-size:56px; padding:18px 40px; border-radius:999px; white-space:nowrap; }
+
+    .doc { position:absolute; left:50%; top:50%; width:360px; height:480px; margin:-240px 0 0 -180px; background:#f7f8fb; border-radius:14px;
+      box-shadow:0 30px 60px rgba(0,0,0,.45); color:#132640; padding:34px; font-size:30px; font-weight:800; }
+    .doc i { display:block; height:14px; background:#cfd8e6; border-radius:7px; margin-top:22px; }
+    .seal { position:absolute; right:26px; bottom:26px; width:90px; height:90px; border-radius:50%; border:6px solid var(--gold); color:var(--gold);
+      font-size:22px; font-weight:900; display:flex; align-items:center; justify-content:center; }
+    .chk { position:absolute; left:80px; right:80px; font-size:50px; font-weight:700; display:flex; gap:24px; align-items:center; }
+    .chk b { display:inline-flex; width:64px; height:64px; border-radius:16px; background:var(--gold); color:#111; align-items:center; justify-content:center; font-size:40px; flex:none; }
+
+    #chart { position:absolute; left:50%; top:50%; width:900px; height:560px; margin:-280px 0 0 -450px; transform-style:preserve-3d; }
+    .bar3 { position:absolute; bottom:0; width:190px; border-radius:18px 18px 0 0; box-shadow: inset 0 0 0 3px rgba(255,255,255,.2), 0 30px 40px rgba(0,0,0,.5); }
+    .lbl { position:absolute; font-size:40px; font-weight:800; text-align:center; width:260px; }
+
+    #ring { position:absolute; left:50%; top:50%; width:460px; height:460px; margin:-230px 0 0 -230px; transform-style:preserve-3d; }
+    #ring svg { width:460px; height:460px; overflow:visible; }
+
+    #phone { position:absolute; left:50%; top:50%; width:440px; height:880px; margin:-440px 0 0 -220px; border-radius:70px; background:#05090f;
+      border:16px solid #1d2a3d; box-shadow:0 60px 120px rgba(0,0,0,.6), inset 0 0 0 3px #000; padding:70px 34px; transform-style:preserve-3d; }
+    #phone .scr { background:linear-gradient(180deg,#132640,#0c1a2e); border-radius:40px; height:100%; padding:40px 30px; }
+    #phone h4 { font-size:40px; font-weight:900; color:var(--gold); margin-bottom:36px; }
+    .step { display:flex; align-items:center; gap:16px; font-size:30px; font-weight:700; padding:22px 0; border-bottom:2px solid rgba(255,255,255,.08); color:var(--mut); }
+    .step b { width:52px; height:52px; border-radius:50%; border:3px solid var(--mut); flex:none; display:flex; align-items:center; justify-content:center; font-size:30px; }
+    .step.done { color:var(--ink); }
+    .step.done b { background:var(--gold); border-color:var(--gold); color:#111; }
+
+    #idcard { position:absolute; left:50%; top:50%; width:940px; height:480px; margin:-240px 0 0 -470px; border-radius:32px;
+      background:linear-gradient(135deg,#e0b15a,#8d6420); color:#111; padding:50px; transform-style:preserve-3d; box-shadow:0 50px 100px rgba(0,0,0,.6); }
+    #idwrap { display:flex; gap:44px; align-items:center; height:100%; }
+    #idphoto { width:270px; height:270px; border-radius:50%; object-fit:cover; object-position:50% 25%; border:6px solid #111; flex:none; }
+    #idtext { min-width:0; }
+    #idtext .n { white-space:nowrap; font-size:60px; font-weight:900; }
+    #idtext .c { font-size:40px; font-weight:800; margin-top:14px; }
+    #idtext .s { font-size:30px; font-weight:700; margin-top:24px; }
+
+    .foot { position:absolute; left:0; right:0; bottom:120px; text-align:center; font-size:34px; font-weight:700; color:var(--mut); letter-spacing:2px; }
+    #flash { position:absolute; inset:0; opacity:0; background: radial-gradient(circle at 50% 40%, rgba(255,226,150,.95), rgba(224,177,90,.35) 45%, rgba(0,0,0,0) 75%); mix-blend-mode:screen; }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="main" data-start="0" data-duration="31" data-width="1080" data-height="1920">
+
+    <!-- Cena 1: gancho -->
+    <div class="scene clip" id="s0" data-start="0" data-duration="3.9" data-track-index="0">
+      <div class="grid"></div>
+      <div class="kick" data-start="0" data-duration="3.9">POR QUE CORRETOR?</div>
+      <div class="title" style="top:420px;font-size:120px;line-height:1">Comprar um imóvel é uma das decisões <span class="hl">mais caras</span> da sua vida.</div>
+    </div>
+
+    <!-- Cena 2: não sozinho (transição: círculo) -->
+    <div class="scene clip" id="s1" data-start="3.2" data-duration="4.0" data-track-index="1">
+      <div class="grid"></div>
+      <div class="title">Não precisa fazer isso <span class="hl">sozinho</span>.</div>
+      <div class="persp" style="top:640px;height:900px">
+        <div class="c3">Preço</div><div class="c3">Documentos</div><div class="c3">Negociação</div><div class="c3">Contrato</div>
+      </div>
+    </div>
+
+    <!-- Cena 3: preço justo (transição: virada 3D) -->
+    <div class="scene clip" id="s2" data-start="6.5" data-duration="4.2" data-track-index="2">
+      <div class="grid"></div>
+      <div class="kick">01 · PREÇO JUSTO</div>
+      <div class="title">Quanto vale <span class="hl">de verdade</span>?</div>
+      <div class="sub">Avaliação com base em imóveis comparáveis da mesma região, não em achismo.</div>
+      <div class="persp" style="top:620px;height:1000px">
+        <div id="cube">
+          <div class="face f-front"><div class="win" style="left:40px;top:60px"></div><div class="win" style="left:260px;top:60px"></div><div class="win" style="left:40px;top:220px"></div><div class="win" style="left:260px;top:220px"></div></div>
+          <div class="face f-back"></div><div class="face f-right"></div><div class="face f-left"></div>
+          <div class="face f-top"></div><div class="face f-bottom"></div>
+        </div>
+      </div>
+      <div class="tagp">R$ [valor]</div>
+    </div>
+
+    <!-- Cena 4: documentação (transição: diagonal) -->
+    <div class="scene clip" id="s3" data-start="10" data-duration="4.2" data-track-index="3">
+      <div class="grid"></div>
+      <div class="kick">02 · DOCUMENTAÇÃO</div>
+      <div class="title" style="font-size:92px">Quem confere a papelada <span class="hl">antes</span> de você.</div>
+      <div class="persp" style="top:560px;height:620px">
+        <div class="doc" id="d0">Matrícula<i></i><i></i><i></i></div>
+        <div class="doc" id="d1">Certidões<i></i><i></i><i></i></div>
+        <div class="doc" id="d2">Ônus e<br>pendências<i></i><i></i><span class="seal">OK</span></div>
+      </div>
+      <div class="chk" id="k0" style="top:1260px"><b>✓</b>Matrícula atualizada</div>
+      <div class="chk" id="k1" style="top:1360px"><b>✓</b>Certidões dos vendedores</div>
+      <div class="chk" id="k2" style="top:1460px"><b>✓</b>Ônus, penhoras e pendências</div>
+    </div>
+
+    <!-- Cena 5: negociação (transição: glitch) -->
+    <div class="scene clip" id="s4" data-start="13.5" data-duration="4.2" data-track-index="4">
+      <div class="grid"></div>
+      <div class="kick">03 · NEGOCIAÇÃO</div>
+      <div class="title" style="font-size:92px">Quem negocia todo dia <span class="hl">sabe onde o preço cede</span>.</div>
+      <div class="persp" style="top:560px;height:1100px">
+        <div id="chart">
+          <div class="bar3" id="b0" style="left:90px;height:0;background:linear-gradient(180deg,#5ab0ff,#1d5a99)"></div>
+          <div class="bar3" id="b1" style="left:370px;height:0;background:linear-gradient(180deg,#e0b15a,#8d6420)"></div>
+          <div class="bar3" id="b2" style="left:650px;height:0;background:linear-gradient(180deg,#7fe0b0,#1f7a50)"></div>
+        </div>
+      </div>
+      <div class="lbl" id="l0" style="left:70px;top:1340px">Pedido inicial</div>
+      <div class="lbl" id="l1" style="left:350px;top:1340px">Contraproposta</div>
+      <div class="lbl" id="l2" style="left:630px;top:1340px">Acordo</div>
+    </div>
+
+    <!-- Cena 6: seu tempo (transição: círculo) -->
+    <div class="scene clip" id="s5" data-start="17" data-duration="4.2" data-track-index="5">
+      <div class="grid"></div>
+      <div class="kick">04 · SEU TEMPO</div>
+      <div class="title">Menos idas e vindas.</div>
+      <div class="sub" style="top:540px">Ele filtra imóveis, agenda visitas e acompanha cada etapa com você.</div>
+      <div class="persp" style="top:620px;height:1000px">
+        <div id="ring">
+          <svg viewBox="0 0 460 460">
+            <circle cx="230" cy="230" r="180" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="32"/>
+            <circle id="arc" cx="230" cy="230" r="180" fill="none" stroke="#e0b15a" stroke-width="32" stroke-linecap="round"
+              transform="rotate(-90 230 230)" stroke-dasharray="1131" stroke-dashoffset="1131"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cena 7: processo (transição: virada 3D) -->
+    <div class="scene clip" id="s6" data-start="20.5" data-duration="4.2" data-track-index="6">
+      <div class="grid"></div>
+      <div class="kick">05 · PROCESSO</div>
+      <div class="title" style="font-size:92px">Cada etapa, <span class="hl">organizada</span>.</div>
+      <div class="persp" style="top:560px;height:1100px">
+        <div id="phone">
+          <div class="scr">
+            <h4>Sua compra</h4>
+            <div class="step" id="st0"><b>1</b>Proposta enviada</div>
+            <div class="step" id="st1"><b>2</b>Contrato revisado</div>
+            <div class="step" id="st2"><b>3</b>Financiamento</div>
+            <div class="step" id="st3"><b>4</b>Escritura</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cena 8: comissão (transição: diagonal) -->
+    <div class="scene clip" id="s7" data-start="24" data-duration="4.2" data-track-index="7">
+      <div class="grid"></div>
+      <div class="kick">TRANSPARÊNCIA</div>
+      <div class="title" style="font-size:96px">Quem paga a comissão?</div>
+      <div class="sub" style="top:460px;font-size:52px;color:var(--ink)">Em geral, o vendedor. Mas <span class="hl">confirme isso por escrito</span> antes de assinar qualquer coisa.</div>
+    </div>
+
+    <!-- Cena 9: CTA com o corretor (transição: zoom) -->
+    <div class="scene clip" id="s8" data-start="27.5" data-duration="3.5" data-track-index="8">
+      <div class="grid"></div>
+      <div class="kick">ESCOLHA COM CRITÉRIO</div>
+      <div class="title" style="font-size:96px">Procure um corretor <span class="hl">credenciado</span>.</div>
+      <div class="persp" style="top:620px;height:900px">
+        <div id="idcard">
+          <div id="idwrap">
+            <img id="idphoto" src="assets/corretor.jpg" alt="Cleber S Morales">
+            <div id="idtext">
+              <div class="n">Cleber S Morales</div>
+              <div class="c">Corretor de imóveis</div>
+              <div class="s">CRECI [número]</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot">COMPRAR COM SEGURANÇA</div>
+    </div>
+
+    <div id="flash" class="clip" data-start="0" data-duration="31" data-track-index="9"></div>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+    const TR = 0.7;
+
+    // Entrada de elementos dentro de uma cena (tempo absoluto)
+    const inUp   = (sel, t, d = 0.6) => tl.from(sel, { y: 70, opacity: 0, duration: d, ease: "power3.out" }, t);
+    const inLeft = (sel, t, d = 0.6) => tl.from(sel, { x: -120, opacity: 0, duration: d, ease: "power3.out" }, t);
+
+    // Transições de entrada das cenas (cada cena começa com a transição sobre a anterior)
+    const T = {
+      circle(id, t) { tl.fromTo(id, { clipPath: "circle(0% at 50% 46%)" }, { clipPath: "circle(80% at 50% 46%)", duration: TR, ease: "power3.inOut" }, t); },
+      diag(id, t)   { tl.fromTo(id, { clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)" }, { clipPath: "polygon(0% 0%, 150% 0%, 105% 100%, 0% 100%)", duration: TR, ease: "power3.inOut" }, t); },
+      flip(id, t)   { tl.fromTo(id, { rotationX: -85, transformPerspective: 1600, transformOrigin: "50% 0%", filter: "brightness(0.4)", opacity: 0.4 },
+                              { rotationX: 0, filter: "brightness(1)", opacity: 1, duration: TR, ease: "power3.out" }, t); },
+      zoom(id, t)   { tl.fromTo(id, { scale: 1.45, filter: "blur(18px)", opacity: 0 }, { scale: 1, filter: "blur(0px)", opacity: 1, duration: TR, ease: "power3.out" }, t); },
+      glitch(id, t) { tl.fromTo(id, { clipPath: "inset(40% 0% 30% 0%)", x: -50, skewX: -6 }, { clipPath: "inset(0% 0% 0% 0%)", x: 0, skewX: 0, duration: TR, ease: "power2.out" }, t); },
+    };
+    T.circle("#s1", 3.2);
+    T.flip("#s2", 6.5);
+    T.diag("#s3", 10);
+    T.glitch("#s4", 13.5);
+    T.circle("#s5", 17);
+    T.flip("#s6", 20.5);
+    T.diag("#s7", 24);
+    T.zoom("#s8", 27.5);
+
+    // Flash de luz nas costuras entre cenas
+    [3.2, 6.5, 10, 13.5, 17, 20.5, 24, 27.5].forEach(t => {
+      tl.to("#flash", { opacity: 0.55, duration: 0.35, ease: "sine.inOut", yoyo: true, repeat: 1 }, t - 0.15);
+    });
+
+    // Cena 1
+    inUp(".kick", 0.1); inUp("#s0 .title", 0.4, 0.8);
+
+    // Cena 2: cartões 3D
+    inUp("#s1 .title", 3.4);
+    document.querySelectorAll("#s1 .c3").forEach((el, i) => {
+      tl.fromTo(el, { opacity: 0, z: -700 - i * 40, rotationY: 70, rotationX: 20, y: 0 },
+        { opacity: 1, z: -i * 40, rotationY: (i - 1.5) * 9, rotationX: -8, y: (i - 1.5) * -18, duration: 0.6, ease: "power3.out" }, 3.7 + i * 0.22);
+    });
+
+    // Cena 3: cubo 3D girando
+    inUp("#s2 .kick", 6.6, 0.4); inUp("#s2 .title", 6.7); inUp("#s2 .sub", 7.0);
+    tl.fromTo("#cube", { rotationX: -20, rotationY: -28 }, { rotationX: -20, rotationY: 114, duration: 3.6, ease: "power1.inOut" }, 6.6);
+    tl.from(".tagp", { scale: 0.5, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 8.1);
+
+    // Cena 4: documentos e checklist
+    inUp("#s3 .kick", 10.0, 0.4); inUp("#s3 .title", 10.2);
+    ["#d0", "#d1", "#d2"].forEach((id, i) => {
+      tl.fromTo(id, { opacity: 0, y: 200 }, { opacity: 1, y: 0, rotation: (i - 1) * 13, duration: 0.6, ease: "power3.out" }, 10.2 + i * 0.25);
+    });
+    inLeft("#k0", 11.4); inLeft("#k1", 11.9); inLeft("#k2", 12.4);
+
+    // Cena 5: gráfico 3D
+    inUp("#s4 .kick", 13.5, 0.4); inUp("#s4 .title", 13.7);
+    [["#b0", 520], ["#b1", 380], ["#b2", 300]].forEach(([id, h], i) => {
+      tl.to(id, { height: h, duration: 0.9, ease: "power3.out" }, 13.9 + i * 0.35);
+    });
+    tl.fromTo("#chart", { rotationX: 55, rotationZ: -6 }, { rotationX: 45, rotationZ: -6, duration: 4, ease: "power1.out" }, 13.5);
+    inUp("#l0", 14.7); inUp("#l1", 15.0); inUp("#l2", 15.3);
+
+    // Cena 6: anel de progresso
+    inUp("#s5 .kick", 17.0, 0.4); inUp("#s5 .title", 17.2); inUp("#s5 .sub", 17.5);
+    tl.fromTo("#arc", { strokeDashoffset: 1131 }, { strokeDashoffset: 1131 * (1 - 0.72), duration: 1.6, ease: "power2.inOut" }, 17.6);
+    tl.fromTo("#ring", { rotationX: -30, rotationZ: 0 }, { rotationX: -30, rotationZ: 18 * 3.5, duration: 3.5, ease: "none" }, 17.0);
+
+    // Cena 7: celular 3D com etapas
+    inUp("#s6 .kick", 20.5, 0.4); inUp("#s6 .title", 20.7);
+    tl.fromTo("#phone", { rotationY: -60, rotationX: 20, opacity: 0 }, { rotationY: -24, rotationX: 8, opacity: 1, duration: 0.9, ease: "power3.out" }, 20.8);
+    tl.to("#phone", { rotationY: -18, duration: 2.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 21.7);
+    [["#st0", 21.6], ["#st1", 22.4], ["#st2", 23.2], ["#st3", 24.0]].forEach(([id, t]) => {
+      tl.add(() => { document.querySelector(id).classList.add("done"); document.querySelector(id + " b").textContent = "✓"; }, t);
+    });
+
+    // Cena 8: comissão
+    inUp("#s7 .kick", 24.0, 0.4); inUp("#s7 .title", 24.2); inUp("#s7 .sub", 24.7);
+
+    // Cena 9: cartão do corretor girando
+    inUp("#s8 .kick", 27.5, 0.4); inUp("#s8 .title", 27.7);
+    tl.fromTo("#idcard", { rotationY: 80, opacity: 0 }, { rotationY: -6, rotationX: -6, opacity: 1, duration: 1.0, ease: "power3.out" }, 27.9);
+    inUp(".foot", 28.7);
+
+    window.__timelines["main"] = tl;
+  </script>
+</body>
+</html>
