@@ -66,11 +66,19 @@
   .step.done b{background:var(--gold);border-color:var(--gold);color:#111}
 
   /* Cena 8: cartão de identificação 3D */
-  #idcard{position:absolute;left:50%;top:50%;width:640px;height:400px;margin:-200px 0 0 -320px;border-radius:32px;
+  #idcard{position:absolute;left:50%;top:50%;width:940px;height:480px;margin:-240px 0 0 -470px;border-radius:32px;
     background:linear-gradient(135deg,#e0b15a,#8d6420);color:#111;padding:50px;transform-style:preserve-3d;box-shadow:0 50px 100px rgba(0,0,0,.6)}
   #idcard .n{font-size:64px;font-weight:900}
   #idcard .c{font-size:44px;font-weight:800;margin-top:14px}
   #idcard .s{font-size:30px;font-weight:700;margin-top:40px;opacity:.85}
+  #flash{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:50;
+    background:radial-gradient(circle at 50% 40%,rgba(255,226,150,.95),rgba(224,177,90,.35) 45%,rgba(0,0,0,0) 75%);mix-blend-mode:screen}
+  #idcard .n{white-space:nowrap;font-size:60px}
+  #idcard .c{font-size:40px}
+  #idcard .s{font-size:30px;margin-top:24px;opacity:1}
+  #idphoto{width:270px;height:270px;border-radius:50%;object-fit:cover;object-position:50% 25%;border:6px solid #111;flex:none}
+  #idwrap{display:flex;gap:44px;align-items:center;height:100%}
+  #idtext{min-width:0}
   .foot{position:absolute;left:0;right:0;bottom:120px;text-align:center;font-size:34px;font-weight:700;color:var(--mut);letter-spacing:2px}
 </style>
 </head>
@@ -82,7 +90,7 @@
     <div class="title a" data-at="0.4" data-anim="up" data-dur="0.8" style="top:420px;font-size:120px;line-height:1">Comprar um imóvel é uma das decisões <span class="hl">mais caras</span> da sua vida.</div>
   </div>
 
-  <div class="scene" id="s1" data-from="3.2" data-to="6.5" data-tr="zoom">
+  <div class="scene" id="s1" data-from="3.2" data-to="6.5" data-tr="circle">
     <div class="grid"></div>
     <div class="title a" data-at="0" data-anim="up" style="top:200px">Não precisa fazer isso <span class="hl">sozinho</span>.</div>
     <div class="stage3d" id="stack" style="top:640px;height:900px">
@@ -93,7 +101,7 @@
     </div>
   </div>
 
-  <div class="scene" id="s2" data-from="6.5" data-to="10" data-tr="cube">
+  <div class="scene" id="s2" data-from="6.5" data-to="10" data-tr="flip">
     <div class="grid"></div>
     <div class="kick a" data-at="0" data-anim="up">01 · PREÇO JUSTO</div>
     <div class="title a" data-at="0.2" data-anim="up">Quanto vale <span class="hl">de verdade</span>?</div>
@@ -108,7 +116,7 @@
     <div class="tagp a" data-at="1.6" data-anim="pop">R$ [valor]</div>
   </div>
 
-  <div class="scene" id="s3" data-from="10" data-to="13.5" data-tr="slice">
+  <div class="scene" id="s3" data-from="10" data-to="13.5" data-tr="diag">
     <div class="grid"></div>
     <div class="kick a" data-at="0" data-anim="up">02 · DOCUMENTAÇÃO</div>
     <div class="title a" data-at="0.2" data-anim="up" style="font-size:92px">Quem confere a papelada <span class="hl">antes</span> de você.</div>
@@ -122,7 +130,7 @@
     <div class="chk a" data-at="2.4" data-anim="left" style="top:1460px"><b>✓</b>Ônus, penhoras e pendências</div>
   </div>
 
-  <div class="scene" id="s4" data-from="13.5" data-to="17" data-tr="wipe">
+  <div class="scene" id="s4" data-from="13.5" data-to="17" data-tr="glitch">
     <div class="grid"></div>
     <div class="kick a" data-at="0" data-anim="up">03 · NEGOCIAÇÃO</div>
     <div class="title a" data-at="0.2" data-anim="up" style="font-size:92px">Quem negocia todo dia <span class="hl">sabe onde o preço cede</span>.</div>
@@ -138,7 +146,7 @@
     <div class="lbl a" data-at="1.8" data-anim="up" style="left:630px;top:1340px">Acordo</div>
   </div>
 
-  <div class="scene" id="s5" data-from="17" data-to="20.5" data-tr="zoom">
+  <div class="scene" id="s5" data-from="17" data-to="20.5" data-tr="circle">
     <div class="grid"></div>
     <div class="kick a" data-at="0" data-anim="up">04 · SEU TEMPO</div>
     <div class="title a" data-at="0.2" data-anim="up">Menos idas e vindas.</div>
@@ -154,7 +162,7 @@
     </div>
   </div>
 
-  <div class="scene" id="s6" data-from="20.5" data-to="24" data-tr="cube">
+  <div class="scene" id="s6" data-from="20.5" data-to="24" data-tr="flip">
     <div class="grid"></div>
     <div class="kick a" data-at="0" data-anim="up">05 · PROCESSO</div>
     <div class="title a" data-at="0.2" data-anim="up" style="font-size:92px">Cada etapa, <span class="hl">organizada</span>.</div>
@@ -171,26 +179,32 @@
     </div>
   </div>
 
-  <div class="scene" id="s7" data-from="24" data-to="27.5" data-tr="slice">
+  <div class="scene" id="s7" data-from="24" data-to="27.5" data-tr="diag">
     <div class="grid"></div>
     <div class="kick a" data-at="0" data-anim="up">TRANSPARÊNCIA</div>
     <div class="title a" data-at="0.2" data-anim="up" style="font-size:96px">Quem paga a comissão?</div>
     <div class="sub a" data-at="0.7" data-anim="up" style="top:460px;font-size:52px;color:var(--txt)">Em geral, o vendedor. Mas <span class="hl">confirme isso por escrito</span> antes de assinar qualquer coisa.</div>
   </div>
 
-  <div class="scene" id="s8" data-from="27.5" data-to="30.5" data-tr="wipe">
+  <div class="scene" id="s8" data-from="27.5" data-to="30.5" data-tr="zoom">
     <div class="grid"></div>
     <div class="kick a" data-at="0" data-anim="up">ESCOLHA COM CRITÉRIO</div>
     <div class="title a" data-at="0.2" data-anim="up" style="font-size:96px">Procure um corretor <span class="hl">credenciado</span>.</div>
     <div class="stage3d" style="top:620px;height:900px">
       <div id="idcard">
-        <div class="n">[Seu nome]</div>
-        <div class="c">CRECI [número]</div>
-        <div class="s">Confira o registro no site do Creci da sua região.</div>
+        <div id="idwrap">
+          <img id="idphoto" src="assets/corretor.jpg" alt="Cleber S Morales">
+          <div id="idtext">
+            <div class="n">Cleber S Morales</div>
+            <div class="c">Corretor de imóveis</div>
+            <div class="s">CRECI [número]</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="foot a" data-at="1.2" data-anim="up">COMPRAR COM SEGURANÇA</div>
   </div>
+  <div id="flash"></div>
 </div>
 
 <script>
@@ -282,6 +296,25 @@
         el.style.transformOrigin = "0% 50%";
         el.style.transform = `perspective(1800px) rotateY(${(1 - e) * -90}deg)`;
       }
+      // Círculo que abre a partir do centro (reveal circular)
+      if (tr === "circle") el.style.clipPath = `circle(${e * 80}% at 50% 46%)`;
+      // Varredura diagonal com borda inclinada
+      if (tr === "diag") {
+        const x = e * 150;
+        el.style.clipPath = `polygon(0 0, ${x}% 0, ${x - 45}% 100%, 0 100%)`;
+      }
+      // Virada de página em 3D (dobra no topo)
+      if (tr === "flip") {
+        el.style.transformOrigin = "50% 0%";
+        el.style.transform = `perspective(1600px) rotateX(${(1 - e) * -85}deg)`;
+        el.style.filter = `brightness(${0.4 + 0.6 * e})`;
+      }
+      // Glitch: fatias deslocadas que se alinham
+      if (tr === "glitch") {
+        const off = (1 - e) * 60;
+        el.style.clipPath = `inset(${(1 - e) * 40}% 0 ${(1 - e) * 30}% 0)`;
+        el.style.transform = `translateX(${off * (i % 2 ? 1 : -1)}px) skewX(${(1 - e) * 6 * (i % 2 ? -1 : 1)}deg)`;
+      }
 
       // Elementos com animação de entrada
       el.querySelectorAll(".a").forEach(a => {
@@ -297,6 +330,15 @@
 
       if (sceneFx[el.id]) sceneFx[el.id](lt);
     });
+
+    // Flash de luz dourada na costura entre cenas (light leak)
+    let flash = 0;
+    scenes.forEach(el => {
+      const to = +el.dataset.to;
+      const k = clamp((t - (to - 0.15)) / TR);
+      if (t >= to - 0.15 && t < to + TR) flash = Math.max(flash, Math.sin(Math.PI * k) * 0.55);
+    });
+    $("flash").style.opacity = flash;
   };
   window.renderAt(0);
 </script>
