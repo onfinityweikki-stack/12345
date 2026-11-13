@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Por que comprar com corretor</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0a1420;--navy:#132640;--navy2:#0c1a2e;--gold:#e0b15a;--blue:#5ab0ff;--txt:#f4f6fa;--mut:#9fb3c8}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--txt);
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;
+    background:radial-gradient(circle at 50% 30%,#1b3558 0%,var(--bg) 65%)}
+  .scene{position:absolute;inset:0;display:none;will-change:transform,opacity,clip-path}
+  .grid{position:absolute;inset:-200px;background-image:linear-gradient(rgba(90,176,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(90,176,255,.07) 1px,transparent 1px);background-size:80px 80px;transform:perspective(900px) rotateX(60deg);transform-origin:50% 100%;opacity:.6}
+  .kick{position:absolute;left:80px;top:200px;font-size:40px;font-weight:800;letter-spacing:6px;color:var(--gold)}
+  .title{position:absolute;left:80px;right:80px;top:250px;font-size:100px;line-height:1.02;font-weight:900;letter-spacing:-2px}
+  .sub{position:absolute;left:80px;right:80px;top:560px;font-size:48px;line-height:1.3;font-weight:600;color:var(--mut)}
+  .hl{color:var(--gold)}
+  .stage3d{position:absolute;left:0;right:0;perspective:1200px;perspective-origin:50% 40%}
+  .a{will-change:transform,opacity}
+
+  /* Cena 1: cartões 3D */
+  .c3{position:absolute;left:50%;top:50%;width:640px;height:380px;margin:-190px 0 0 -320px;border-radius:32px;
+    background:linear-gradient(135deg,#1f3a5f,#0f1d33);border:2px solid rgba(224,177,90,.55);
+    display:flex;align-items:center;justify-content:center;font-size:72px;font-weight:900;
+    box-shadow:0 40px 80px rgba(0,0,0,.5);opacity:0}
+
+  /* Cena 2: cubo 3D (imóvel) */
+  #cube{position:absolute;left:50%;top:50%;width:380px;height:380px;margin:-190px 0 0 -190px;transform-style:preserve-3d}
+  .face{position:absolute;inset:0;border:3px solid rgba(224,177,90,.7);background:rgba(19,38,64,.92)}
+  .f-front{transform:translateZ(190px);background:linear-gradient(160deg,#25466f,#132640)}
+  .f-back{transform:rotateY(180deg) translateZ(190px)}
+  .f-right{transform:rotateY(90deg) translateZ(190px);background:#0d1d33}
+  .f-left{transform:rotateY(-90deg) translateZ(190px);background:#0d1d33}
+  .f-top{transform:rotateX(90deg) translateZ(190px);background:#e0b15a}
+  .f-bottom{transform:rotateX(-90deg) translateZ(190px);background:#070f1c}
+  .win{position:absolute;width:72px;height:72px;background:linear-gradient(180deg,#ffd98a,#e0a64a);box-shadow:0 0 30px rgba(255,200,100,.5)}
+  .tagp{position:absolute;left:50%;top:1290px;transform:translateX(-50%);background:var(--gold);color:#111;font-weight:900;font-size:56px;padding:18px 40px;border-radius:999px;white-space:nowrap}
+
+  /* Cena 3: documentos */
+  .doc{position:absolute;left:50%;top:50%;width:360px;height:480px;margin:-240px 0 0 -180px;background:#f7f8fb;border-radius:14px;
+    box-shadow:0 30px 60px rgba(0,0,0,.45);color:#132640;padding:34px;font-size:30px;font-weight:800;opacity:0}
+  .doc i{display:block;height:14px;background:#cfd8e6;border-radius:7px;margin-top:22px}
+  .doc .seal{position:absolute;right:26px;bottom:26px;width:90px;height:90px;border-radius:50%;border:6px solid var(--gold);color:var(--gold);
+    font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center}
+  .chk{position:absolute;left:80px;right:80px;font-size:50px;font-weight:700;display:flex;gap:24px;align-items:center}
+  .chk b{display:inline-flex;width:64px;height:64px;border-radius:16px;background:var(--gold);color:#111;align-items:center;justify-content:center;font-size:40px;flex:none}
+
+  /* Cena 4: gráfico 3D */
+  #chart{position:absolute;left:50%;top:50%;width:900px;height:560px;margin:-280px 0 0 -450px;transform-style:preserve-3d;transform:rotateX(55deg) rotateZ(-6deg)}
+  .bar3{position:absolute;bottom:0;width:190px;border-radius:18px 18px 0 0;box-shadow:inset 0 0 0 3px rgba(255,255,255,.2),0 30px 40px rgba(0,0,0,.5)}
+  .lbl{position:absolute;font-size:40px;font-weight:800;color:var(--txt);text-align:center;width:260px}
+
+  /* Cena 5: anel 3D */
+  #ring{position:absolute;left:50%;top:50%;width:460px;height:460px;margin:-230px 0 0 -230px;transform-style:preserve-3d}
+  #ring svg{width:460px;height:460px;overflow:visible}
+
+  /* Cena 6: celular 3D */
+  #phone{position:absolute;left:50%;top:50%;width:440px;height:880px;margin:-440px 0 0 -220px;border-radius:70px;background:#05090f;
+    border:16px solid #1d2a3d;box-shadow:0 60px 120px rgba(0,0,0,.6),inset 0 0 0 3px #000;padding:70px 34px;transform-style:preserve-3d}
+  #phone .scr{background:linear-gradient(180deg,#132640,#0c1a2e);border-radius:40px;height:100%;padding:40px 30px}
+  #phone h4{font-size:40px;font-weight:900;color:var(--gold);margin-bottom:36px}
+  .step{display:flex;align-items:center;gap:20px;font-size:34px;font-weight:700;padding:22px 0;border-bottom:2px solid rgba(255,255,255,.08);color:var(--mut)}
+  .step b{width:52px;height:52px;border-radius:50%;border:3px solid var(--mut);flex:none;display:flex;align-items:center;justify-content:center;font-size:28px}
+  .step.done{color:var(--txt)}
+  .step.done b{background:var(--gold);border-color:var(--gold);color:#111}
+
+  /* Cena 8: cartão de identificação 3D */
+  #idcard{position:absolute;left:50%;top:50%;width:640px;height:400px;margin:-200px 0 0 -320px;border-radius:32px;
+    background:linear-gradient(135deg,#e0b15a,#8d6420);color:#111;padding:50px;transform-style:preserve-3d;box-shadow:0 50px 100px rgba(0,0,0,.6)}
+  #idcard .n{font-size:64px;font-weight:900}
+  #idcard .c{font-size:44px;font-weight:800;margin-top:14px}
+  #idcard .s{font-size:30px;font-weight:700;margin-top:40px;opacity:.85}
+  .foot{position:absolute;left:0;right:0;bottom:120px;text-align:center;font-size:34px;font-weight:700;color:var(--mut);letter-spacing:2px}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="scene" id="s0" data-from="0" data-to="3.2" data-tr="none">
+    <div class="grid"></div>
+    <div class="kick a" data-at="0.1" data-anim="up">POR QUE CORRETOR?</div>
+    <div class="title a" data-at="0.4" data-anim="up" data-dur="0.8" style="top:420px;font-size:120px;line-height:1">Comprar um imóvel é uma das decisões <span class="hl">mais caras</span> da sua vida.</div>
+  </div>
+
+  <div class="scene" id="s1" data-from="3.2" data-to="6.5" data-tr="zoom">
+    <div class="grid"></div>
+    <div class="title a" data-at="0" data-anim="up" style="top:200px">Não precisa fazer isso <span class="hl">sozinho</span>.</div>
+    <div class="stage3d" id="stack" style="top:640px;height:900px">
+      <div class="c3">Preço</div>
+      <div class="c3">Documentos</div>
+      <div class="c3">Negociação</div>
+      <div class="c3">Contrato</div>
+    </div>
+  </div>
+
+  <div class="scene" id="s2" data-from="6.5" data-to="10" data-tr="cube">
+    <div class="grid"></div>
+    <div class="kick a" data-at="0" data-anim="up">01 · PREÇO JUSTO</div>
+    <div class="title a" data-at="0.2" data-anim="up">Quanto vale <span class="hl">de verdade</span>?</div>
+    <div class="sub a" data-at="0.5" data-anim="up" style="top:540px">Avaliação com base em imóveis comparáveis da mesma região, não em achismo.</div>
+    <div class="stage3d" style="top:620px;height:1000px">
+      <div id="cube">
+        <div class="face f-front"><div class="win" style="left:40px;top:60px"></div><div class="win" style="left:260px;top:60px"></div><div class="win" style="left:40px;top:220px"></div><div class="win" style="left:260px;top:220px"></div></div>
+        <div class="face f-back"></div><div class="face f-right"></div><div class="face f-left"></div>
+        <div class="face f-top"></div><div class="face f-bottom"></div>
+      </div>
+    </div>
+    <div class="tagp a" data-at="1.6" data-anim="pop">R$ [valor]</div>
+  </div>
+
+  <div class="scene" id="s3" data-from="10" data-to="13.5" data-tr="slice">
+    <div class="grid"></div>
+    <div class="kick a" data-at="0" data-anim="up">02 · DOCUMENTAÇÃO</div>
+    <div class="title a" data-at="0.2" data-anim="up" style="font-size:92px">Quem confere a papelada <span class="hl">antes</span> de você.</div>
+    <div class="stage3d" style="top:560px;height:620px">
+      <div class="doc" id="d0">Matrícula<i></i><i></i><i></i></div>
+      <div class="doc" id="d1">Certidões<i></i><i></i><i></i></div>
+      <div class="doc" id="d2">Ônus e<br>pendências<i></i><i></i><span class="seal">OK</span></div>
+    </div>
+    <div class="chk a" data-at="1.4" data-anim="left" style="top:1260px"><b>✓</b>Matrícula atualizada</div>
+    <div class="chk a" data-at="1.9" data-anim="left" style="top:1360px"><b>✓</b>Certidões dos vendedores</div>
+    <div class="chk a" data-at="2.4" data-anim="left" style="top:1460px"><b>✓</b>Ônus, penhoras e pendências</div>
+  </div>
+
+  <div class="scene" id="s4" data-from="13.5" data-to="17" data-tr="wipe">
+    <div class="grid"></div>
+    <div class="kick a" data-at="0" data-anim="up">03 · NEGOCIAÇÃO</div>
+    <div class="title a" data-at="0.2" data-anim="up" style="font-size:92px">Quem negocia todo dia <span class="hl">sabe onde o preço cede</span>.</div>
+    <div class="stage3d" style="top:560px;height:1100px">
+      <div id="chart">
+        <div class="bar3" id="b0" style="left:90px;background:linear-gradient(180deg,#5ab0ff,#1d5a99)"></div>
+        <div class="bar3" id="b1" style="left:370px;background:linear-gradient(180deg,#e0b15a,#8d6420)"></div>
+        <div class="bar3" id="b2" style="left:650px;background:linear-gradient(180deg,#7fe0b0,#1f7a50)"></div>
+      </div>
+    </div>
+    <div class="lbl a" data-at="1.2" data-anim="up" style="left:70px;top:1340px">Pedido inicial</div>
+    <div class="lbl a" data-at="1.5" data-anim="up" style="left:350px;top:1340px">Contraproposta</div>
+    <div class="lbl a" data-at="1.8" data-anim="up" style="left:630px;top:1340px">Acordo</div>
+  </div>
+
+  <div class="scene" id="s5" data-from="17" data-to="20.5" data-tr="zoom">
+    <div class="grid"></div>
+    <div class="kick a" data-at="0" data-anim="up">04 · SEU TEMPO</div>
+    <div class="title a" data-at="0.2" data-anim="up">Menos idas e vindas.</div>
+    <div class="sub a" data-at="0.5" data-anim="up" style="top:540px">Ele filtra imóveis, agenda visitas e acompanha cada etapa com você.</div>
+    <div class="stage3d" style="top:620px;height:1000px">
+      <div id="ring">
+        <svg viewBox="0 0 460 460">
+          <circle cx="230" cy="230" r="180" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="32"/>
+          <circle id="arc" cx="230" cy="230" r="180" fill="none" stroke="#e0b15a" stroke-width="32" stroke-linecap="round"
+            transform="rotate(-90 230 230)" stroke-dasharray="1131" stroke-dashoffset="1131"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="scene" id="s6" data-from="20.5" data-to="24" data-tr="cube">
+    <div class="grid"></div>
+    <div class="kick a" data-at="0" data-anim="up">05 · PROCESSO</div>
+    <div class="title a" data-at="0.2" data-anim="up" style="font-size:92px">Cada etapa, <span class="hl">organizada</span>.</div>
+    <div class="stage3d" style="top:560px;height:1100px">
+      <div id="phone">
+        <div class="scr">
+          <h4>Sua compra</h4>
+          <div class="step" id="st0"><b>✓</b>Proposta enviada</div>
+          <div class="step" id="st1"><b>✓</b>Contrato revisado</div>
+          <div class="step" id="st2"><b>3</b>Financiamento</div>
+          <div class="step" id="st3"><b>4</b>Escritura</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scene" id="s7" data-from="24" data-to="27.5" data-tr="slice">
+    <div class="grid"></div>
+    <div class="kick a" data-at="0" data-anim="up">TRANSPARÊNCIA</div>
+    <div class="title a" data-at="0.2" data-anim="up" style="font-size:96px">Quem paga a comissão?</div>
+    <div class="sub a" data-at="0.7" data-anim="up" style="top:460px;font-size:52px;color:var(--txt)">Em geral, o vendedor. Mas <span class="hl">confirme isso por escrito</span> antes de assinar qualquer coisa.</div>
+  </div>
+
+  <div class="scene" id="s8" data-from="27.5" data-to="30.5" data-tr="wipe">
+    <div class="grid"></div>
+    <div class="kick a" data-at="0" data-anim="up">ESCOLHA COM CRITÉRIO</div>
+    <div class="title a" data-at="0.2" data-anim="up" style="font-size:96px">Procure um corretor <span class="hl">credenciado</span>.</div>
+    <div class="stage3d" style="top:620px;height:900px">
+      <div id="idcard">
+        <div class="n">[Seu nome]</div>
+        <div class="c">CRECI [número]</div>
+        <div class="s">Confira o registro no site do Creci da sua região.</div>
+      </div>
+    </div>
+    <div class="foot a" data-at="1.2" data-anim="up">COMPRAR COM SEGURANÇA</div>
+  </div>
+</div>
+
+<script>
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const easeOut = x => 1 - Math.pow(1 - clamp(x), 3);
+  const $ = id => document.getElementById(id);
+  const TR = 0.7; // duração das transições (s)
+
+  // Estado inicial dos elementos com rótulo de cena
+  // (posições dos cartões, documentos e barras são definidas em renderAt)
+  const sceneFx = {
+    s1(lt) {
+      document.querySelectorAll("#stack .c3").forEach((el, i) => {
+        const e = easeOut((lt - 0.5 - i * 0.22) / 0.6);
+        const ang = (i - 1.5) * 9;
+        el.style.opacity = e;
+        el.style.transform =
+          `translateZ(${(1 - e) * -700 - i * 40}px) rotateY(${(1 - e) * 70 + ang * e - 14}deg) rotateX(${(1 - e) * 20 - 8}deg) translateY(${(i - 1.5) * -18 * e}px)`;
+      });
+    },
+    s2(lt) {
+      const rot = -28 + lt * 42;
+      $("cube").style.transform = `rotateX(-20deg) rotateY(${rot}deg)`;
+    },
+    s3(lt) {
+      ["d0", "d1", "d2"].forEach((id, i) => {
+        const e = easeOut((lt - 0.2 - i * 0.25) / 0.6);
+        const ang = (i - 1) * 13;
+        $(id).style.opacity = e;
+        $(id).style.transform =
+          `translateY(${(1 - e) * 200}px) rotate(${ang * e}deg) translateZ(${i * 30 * e}px)`;
+      });
+      document.querySelectorAll(".chk b").forEach((b, i) => { b.style.opacity = 1; });
+    },
+    s4(lt) {
+      const targets = [520, 380, 300];
+      targets.forEach((h, i) => {
+        const e = easeOut((lt - 0.4 - i * 0.35) / 0.9);
+        const el = $("b" + i);
+        el.style.height = (h * e) + "px";
+        el.style.transform = `translateZ(${e * 40}px)`;
+      });
+    },
+    s5(lt) {
+      const e = easeOut((lt - 0.6) / 1.6);
+      $("arc").style.strokeDashoffset = 1131 * (1 - 0.72 * e);
+      $("ring").style.transform = `rotateX(${-30 + Math.sin(lt) * 4}deg) rotateZ(${lt * 18}deg)`;
+    },
+    s6(lt) {
+      const float = Math.sin(lt * 1.6) * 4;
+      $("phone").style.transform = `rotateY(${-24 + float}deg) rotateX(${8 + float * 0.5}deg) rotateZ(-3deg)`;
+      [0, 1, 2, 3].forEach(i => {
+        const done = lt > 1.0 + i * 0.8;
+        $("st" + i).classList.toggle("done", done);
+        $("st" + i).querySelector("b").textContent = done ? "✓" : String(i + 1);
+      });
+    },
+    s8(lt) {
+      const e = easeOut((lt - 0.4) / 1.0);
+      $("idcard").style.opacity = e;
+      $("idcard").style.transform = `rotateY(${(1 - e) * 80 + Math.sin(lt * 0.9) * 10}deg) rotateX(${-6 + Math.cos(lt * 0.7) * 3}deg)`;
+    },
+  };
+
+  window.renderAt = function (t) {
+    const scenes = document.querySelectorAll(".scene");
+    scenes.forEach((el, i) => {
+      const from = +el.dataset.from, to = +el.dataset.to, tr = el.dataset.tr;
+      const lt = t - from;
+      const visible = t >= from && t < to + TR;
+      el.style.display = visible ? "block" : "none";
+      if (!visible) return;
+
+      // Transição de entrada da cena
+      const p = tr === "none" ? 1 : clamp(lt / TR);
+      const e = easeOut(p);
+      el.style.transform = "none";
+      el.style.filter = "none";
+      el.style.clipPath = "none";
+      el.style.opacity = 1;
+      if (tr === "slice") el.style.clipPath = `inset(0 0 ${(1 - e) * 100}% 0)`;
+      if (tr === "wipe") el.style.clipPath = `inset(0 ${(1 - e) * 100}% 0 0)`;
+      if (tr === "zoom") {
+        el.style.transform = `scale(${1 + (1 - e) * 0.45})`;
+        el.style.filter = `blur(${(1 - e) * 18}px)`;
+        el.style.opacity = e;
+      }
+      if (tr === "cube") {
+        el.style.transformOrigin = "0% 50%";
+        el.style.transform = `perspective(1800px) rotateY(${(1 - e) * -90}deg)`;
+      }
+
+      // Elementos com animação de entrada
+      el.querySelectorAll(".a").forEach(a => {
+        const at = +(a.dataset.at || 0), dur = +(a.dataset.dur || 0.6);
+        const k = easeOut((lt - at) / dur);
+        const kind = a.dataset.anim || "up";
+        a.style.opacity = k;
+        if (kind === "up") a.style.transform = `translateY(${(1 - k) * 70}px)`;
+        if (kind === "left") a.style.transform = `translateX(${(1 - k) * -120}px)`;
+        if (kind === "pop") a.style.transform = `scale(${0.5 + 0.5 * k})`;
+        if (kind === "none") a.style.transform = "none";
+      });
+
+      if (sceneFx[el.id]) sceneFx[el.id](lt);
+    });
+  };
+  window.renderAt(0);
+</script>
+</body>
+</html>
