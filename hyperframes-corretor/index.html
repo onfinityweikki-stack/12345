@@ -209,7 +209,7 @@
   <script>
     window.__timelines = window.__timelines || {};
     const tl = gsap.timeline({ paused: true });
-    const TR = 0.7;
+    const FADE = 0.3, REV = 0.5; // saída da cena anterior, depois revelação da próxima
 
     // Entrada de elementos dentro de uma cena (tempo absoluto)
     const inUp   = (sel, t, d = 0.6) => tl.from(sel, { y: 70, opacity: 0, duration: d, ease: "power3.out" }, t);
@@ -217,25 +217,25 @@
 
     // Transições de entrada das cenas (cada cena começa com a transição sobre a anterior)
     const T = {
-      circle(id, t) { tl.fromTo(id, { clipPath: "circle(0% at 50% 46%)" }, { clipPath: "circle(80% at 50% 46%)", duration: TR, ease: "power3.inOut" }, t); },
-      diag(id, t)   { tl.fromTo(id, { clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)" }, { clipPath: "polygon(0% 0%, 150% 0%, 105% 100%, 0% 100%)", duration: TR, ease: "power3.inOut" }, t); },
-      flip(id, t)   { tl.fromTo(id, { rotationX: -85, transformPerspective: 1600, transformOrigin: "50% 0%", filter: "brightness(0.4)", opacity: 0.4 },
-                              { rotationX: 0, filter: "brightness(1)", opacity: 1, duration: TR, ease: "power3.out" }, t); },
-      zoom(id, t)   { tl.fromTo(id, { scale: 1.45, filter: "blur(18px)", opacity: 0 }, { scale: 1, filter: "blur(0px)", opacity: 1, duration: TR, ease: "power3.out" }, t); },
-      glitch(id, t) { tl.fromTo(id, { clipPath: "inset(40% 0% 30% 0%)", x: -50, skewX: -6 }, { clipPath: "inset(0% 0% 0% 0%)", x: 0, skewX: 0, duration: TR, ease: "power2.out" }, t); },
+      circle(id, t) { tl.fromTo(id, { clipPath: "circle(0% at 50% 46%)" }, { clipPath: "circle(80% at 50% 46%)", duration: REV, ease: "power3.inOut" }, t); },
+      diag(id, t)   { tl.fromTo(id, { clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)" }, { clipPath: "polygon(0% 0%, 150% 0%, 105% 100%, 0% 100%)", duration: REV, ease: "power3.inOut" }, t); },
+      flip(id, t)   { tl.fromTo(id, { rotationX: -85, transformPerspective: 1600, transformOrigin: "50% 0%", filter: "brightness(0.4)", opacity: 0 },
+                              { rotationX: 0, filter: "brightness(1)", opacity: 1, duration: REV, ease: "power3.out" }, t); },
+      zoom(id, t)   { tl.fromTo(id, { scale: 1.45, filter: "blur(18px)", opacity: 0 }, { scale: 1, filter: "blur(0px)", opacity: 1, duration: REV, ease: "power3.out" }, t); },
+      glitch(id, t) { tl.fromTo(id, { clipPath: "inset(100% 0% 0% 0%)", x: -50, skewX: -6 }, { clipPath: "inset(0% 0% 0% 0%)", x: 0, skewX: 0, duration: REV, ease: "power2.out" }, t); },
     };
-    T.circle("#s1", 3.2);
-    T.flip("#s2", 6.5);
-    T.diag("#s3", 10);
-    T.glitch("#s4", 13.5);
-    T.circle("#s5", 17);
-    T.flip("#s6", 20.5);
-    T.diag("#s7", 24);
-    T.zoom("#s8", 27.5);
+    T.circle("#s1", 3.2 + FADE);
+    T.flip("#s2", 6.5 + FADE);
+    T.diag("#s3", 10 + FADE);
+    T.glitch("#s4", 13.5 + FADE);
+    T.circle("#s5", 17 + FADE);
+    T.flip("#s6", 20.5 + FADE);
+    T.diag("#s7", 24 + FADE);
+    T.zoom("#s8", 27.5 + FADE);
 
     // Cena que sai desaparece durante a transição (evita textos sobrepostos)
     [["#s0", 3.2], ["#s1", 6.5], ["#s2", 10], ["#s3", 13.5], ["#s4", 17], ["#s5", 20.5], ["#s6", 24], ["#s7", 27.5]].forEach(([id, t]) => {
-      tl.to(id, { opacity: 0, duration: TR, ease: "power1.in" }, t);
+      tl.to(id, { opacity: 0, duration: FADE, ease: "power1.in" }, t);
     });
 
     // Flash de luz nas costuras entre cenas
